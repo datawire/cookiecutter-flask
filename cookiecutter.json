@@ -1,0 +1,10 @@
+{
+  "name"                 : "cookiecutter-flask",
+  "description"          : "A Flask microservice",
+  "repo_name"            : "{{ cookiecutter.name | lower | replace(' ', '-') | replace ('_', '-') }}",
+  "repo_url"             : "git@github.com:datawire/{{ cookiecutter.repo_name }}.git",
+  "repo_browser_url"     : "https://github.com/datawire/{{ cookiecutter.repo_name }}",
+
+  "project_name"         : "{{ cookiecutter.repo_name }}",  
+  "project_version"      : "0.0.1"
+}
