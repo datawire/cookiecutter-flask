@@ -7,7 +7,6 @@ all: clean build
 build:
 	# Produces a language build artifact (e.g.: .jar, .whl, .gem). Alternatively a GZIP tarball
 	# can be provided if more appropriate.
-
  
 docker:
 	# Produces a Docker image.
@@ -23,7 +22,6 @@ clean:
 compile:
 	# Compile code (may do nothing for interpreted languages).
 
-
 quark-compile: venv
 	# Compiles Quark sources if there are any.
   
@@ -34,9 +32,9 @@ run-dev: venv
 	# Run the service or application in development mode.
 	venv/bin/python service/service.py
 
-run-prod:
+run-docker:
 	# Run the service or application in production mode.
-	docker run -d {{ cookiecutter.project_name }}
+	docker run --rm --name datawire-{{ cookiecutter.project_name }} -it -p 5000:80 datawire/{{ cookiecutter.project_name }}
 	
 test: venv
 	# Run the full test suite.

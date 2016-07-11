@@ -8,7 +8,13 @@ app = Flask(__name__)
 
 @app.route('/api/v1/hello/<name>', methods=['GET'])
 def hello(name):
-    return jsonify(message="Hello, {}!".format(name), time=time.time() * 1000)
+    return jsonify(message="Hello, {}!".format(name), time=int(round(time.time() * 1000)))
+
+
+@app.route('/health', methods=['GET', 'HEAD'])
+def health():
+    # TODO: Custom health check logic.
+    return '', 200
 
 
 def main():

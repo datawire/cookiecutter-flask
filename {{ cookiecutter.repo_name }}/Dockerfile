@@ -56,7 +56,9 @@ RUN pip install -Ur /tmp/requirements.txt \
 
 COPY service /opt/{{ cookiecutter.project_name }}/service
 COPY config  /opt/{{ cookiecutter.project_name }}/config
+COPY entrypoint.sh /opt/{{ cookiecutter.project_name }}
 
 RUN mv /opt/{{ cookiecutter.project_name }}/config/nginx.conf /etc/nginx/nginx.conf
 
-ENTRYPOINT ["nginx && uwsgi --ini /opt/{{ cookiecutter.project_name }}/config/uwsgi.ini"]
+RUN chmod +x /opt/{{ cookiecutter.project_name }}/entrypoint.sh
+ENTRYPOINT ["/opt/{{ cookiecutter.project_name }}/entrypoint.sh"]
