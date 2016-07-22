@@ -48,7 +48,7 @@ RUN  cd /opt/{{ cookiecutter.project_name }} \
 # --------------------------------------------------------------------------------------------------
 # Configure Nginx
 #
-RUN mv /opt/bar/config/nginx.conf /etc/nginx/nginx.conf
+RUN mv /opt/{{ cookiecutter.project_name }}/config/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 8080
 ENTRYPOINT ["/opt/{{ cookiecutter.project_name }}/entrypoint.sh"]
