@@ -42,8 +42,8 @@ ENV PATH /root/.quark/bin:$PATH
 #
 COPY . /opt/{{ cookiecutter.project_name }}
 RUN  cd /opt/{{ cookiecutter.project_name }} \
-    && make venv \
-    && bash -c "make quark-install"
+     && make venv \
+     && make quark-install
 
 # --------------------------------------------------------------------------------------------------
 # Configure Nginx
