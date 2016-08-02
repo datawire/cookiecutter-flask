@@ -10,7 +10,7 @@ all: clean build
 build:
 	# Produces a language build artifact (e.g.: .jar, .whl, .gem). Alternatively a GZIP tarball
 	# can be provided if more appropriate.
-	;
+	:
  
 docker:
 	# Produces a Docker image.
@@ -22,11 +22,11 @@ deb:
  
 clean:
 	# Clean previous build outputs (e.g. class files) and temporary files. Customize as needed.
-	;
+	:
  
 compile:
 	# Compile code (may do nothing for interpreted languages).
-	;
+	:
   
 quark-install: venv
 	# Compiles AND installs Quark language sources if there are any.
