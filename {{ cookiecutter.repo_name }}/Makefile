@@ -3,6 +3,8 @@
 VERSION=$(shell cat VERSION)
 QUARK_REQUIREMENTS=$(shell sed -e '/^[[:space:]]*$$/d' -e '/^[[:space:]]*\#/d' requirements-quark.txt | tr '\n' ' ' )
 
+DOCKER_REPO=us.gcr.io/datawireio/{{ cookiecutter.project_name }}
+
 .PHONY: all
 
 all: clean build
@@ -14,11 +16,10 @@ build:
  
 docker:
 	# Produces a Docker image.
-	docker build -t datawire/{{ cookiecutter.project_name }}:$(VERSION) .
+	docker build -t datawireio/{{ cookiecutter.project_name }}:$(VERSION) .
 
-deb:
-	# Produces a Debian package.
-	bin/build-deb.sh
+docker-bash:
+	docker run -i -t --entrypoint /bin/bash datawireio/{{ cookiecutter.project_name }}:$(VERSION)
  
 clean:
 	# Clean previous build outputs (e.g. class files) and temporary files. Customize as needed.
@@ -28,11 +29,15 @@ compile:
 	# Compile code (may do nothing for interpreted languages).
 	:
   
-quark-install: venv
+quark-install:
+	# Compiles AND installs Quark language sources if there are any.
+	~/.quark/bin/quark install --python $(QUARK_REQUIREMENTS)
+
+quark-install-venv: venv
 	# Compiles AND installs Quark language sources if there are any.
 	( \
-	    . venv/bin/activate; \
-	    ~/.quark/bin/quark install --python $(QUARK_REQUIREMENTS); \
+		. venv/bin/activate; \
+		~/.quark/bin/quark install --python $(QUARK_REQUIREMENTS); \
 	)
 	
 run-dev: venv
@@ -41,8 +46,13 @@ run-dev: venv
 
 run-docker: docker
 	# Run the service or application in production mode.
-	docker run --rm --name datawire-{{ cookiecutter.project_name }} -it -p 5000:80 datawire/{{ cookiecutter.project_name }}
-	
+	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 8080:8080 $(DOCKER_REPO):$(VERSION)
+
+run-docker-no-rebuild:
+	# Run the service or application in production mode.
+	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 8080:8080 $(DOCKER_REPO):$(VERSION)
+
+
 test: venv
 	# Run the full test suite.
 
@@ -54,6 +64,9 @@ version:
 
 # Python virtualenv automatic setup. Ensures that targets relying on the virtualenv always have an updated python to
 # use.
+#
+# This is intended for developer convenience. Do not attempt to make venv in a Docker container or use a virtualenv in
+# docker container because you will be going down into a world of darkness.
 
 venv: venv/bin/activate
 
