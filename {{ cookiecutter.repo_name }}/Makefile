@@ -68,7 +68,7 @@ unit-test: venv
 	# Run only the unit tests.
 
 version:
-	@echo VERSION
+	@echo $(VERSION)
 
 # Python virtualenv automatic setup. Ensures that targets relying on the virtualenv always have an updated python to
 # use.
