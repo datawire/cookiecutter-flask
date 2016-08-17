@@ -1,0 +1,39 @@
+---
+  apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: {{ cookiecutter.project_name }}
+    namespace: services
+  spec:
+    replicas: 3
+    template:
+      metadata:
+        labels:
+          app: {{ cookiecutter.project_name }}
+      spec:
+        containers:
+        - name: master
+          image: {{ cookiecutter.docker_registry_host }}/{{ cookiecutter.docker_repo }}:{{ cookiecutter.project_version }}
+          env:
+          - name: DATAWIRE_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: datawire
+                key: token
+          ports:
+          - containerPort: 5000
+
+---
+  kind: Service
+  apiVersion: v1
+  metadata:
+    name: {{ cookiecutter.project_name }}
+    namespace: services
+  spec:
+    selector:
+      app: {{ cookiecutter.project_name }}
+    ports:
+      - protocol: TCP
+        port: 5000
+        targetPort: 5000
+        name: {{ cookiecutter.project_name }}

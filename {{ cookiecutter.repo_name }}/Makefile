@@ -3,7 +3,8 @@
 VERSION=$(shell cat VERSION)
 QUARK_REQUIREMENTS=$(shell sed -e '/^[[:space:]]*$$/d' -e '/^[[:space:]]*\#/d' requirements-quark.txt | tr '\n' ' ' )
 
-DOCKER_REPO=us.gcr.io/datawireio/{{ cookiecutter.project_name }}
+DOCKER_REGISTRY_HOST="{{ cookiecutter.docker_registry_host }}"
+DOCKER_REPO="{{ cookiecutter.docker_repo }}"
 
 .PHONY: all
 
@@ -16,10 +17,10 @@ build:
  
 docker:
 	# Produces a Docker image.
-	docker build -t datawireio/{{ cookiecutter.project_name }}:$(VERSION) .
+	docker build -t $(DOCKER_REPO):$(VERSION) .
 
 docker-bash:
-	docker run -i -t --entrypoint /bin/bash datawireio/{{ cookiecutter.project_name }}:$(VERSION)
+	docker run -i -t --entrypoint /bin/bash $(DOCKER_REPO):$(VERSION)
  
 clean:
 	# Clean previous build outputs (e.g. class files) and temporary files. Customize as needed.
@@ -28,7 +29,7 @@ clean:
 compile:
 	# Compile code (may do nothing for interpreted languages).
 	:
-  
+
 quark-install:
 	# Compiles AND installs Quark language sources if there are any.
 	~/.quark/bin/quark install --python $(QUARK_REQUIREMENTS)
@@ -39,19 +40,26 @@ quark-install-venv: venv
 		. venv/bin/activate; \
 		~/.quark/bin/quark install --python $(QUARK_REQUIREMENTS); \
 	)
-	
+
+publish: docker
+	docker tag $(DOCKER_REPO):$(VERSION) $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
+	gcloud docker push $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
+
+publish-no-build:
+	docker tag $(DOCKER_REPO):$(VERSION) $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
+	gcloud docker push $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
+
 run-dev: venv
 	# Run the service or application in development mode.
 	venv/bin/python service/service.py
 
 run-docker: docker
 	# Run the service or application in production mode.
-	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 8080:8080 $(DOCKER_REPO):$(VERSION)
+	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 5000:5000 $(DOCKER_REPO):$(VERSION)
 
 run-docker-no-rebuild:
 	# Run the service or application in production mode.
-	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 8080:8080 $(DOCKER_REPO):$(VERSION)
-
+	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 5000:5000 $(DOCKER_REPO):$(VERSION)
 
 test: venv
 	# Run the full test suite.
