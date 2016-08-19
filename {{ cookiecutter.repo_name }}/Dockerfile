@@ -38,7 +38,7 @@ RUN bash install.sh
 
 RUN ${HOME}/.quark/bin/quark install \
     --python $(sed -e '/^[[:space:]]*$$/d' -e '/^[[:space:]]*\#/d' requirements-quark.txt | tr '\n' ' ' ) \
-    && rm requirements-quark.txt
+    && rm requirements-quark.txt \
     && mv /opt/{{ cookiecutter.project_name }}/config/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 5000
