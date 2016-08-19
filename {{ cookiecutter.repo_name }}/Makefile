@@ -55,11 +55,11 @@ run-dev: venv
 
 run-docker: docker
 	# Run the service or application in production mode.
-	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 5000:5000 $(DOCKER_REPO):$(VERSION)
+	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_ROUTABLE_HOST=127.0.0.1 -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 5000:5000 $(DOCKER_REPO):$(VERSION)
 
 run-docker-no-rebuild:
 	# Run the service or application in production mode.
-	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 5000:5000 $(DOCKER_REPO):$(VERSION)
+	docker run --rm --name datawire-{{ cookiecutter.project_name }} -e DATAWIRE_ROUTABLE_HOST=127.0.0.1 -e DATAWIRE_TOKEN=$(DATAWIRE_TOKEN) -it -p 5000:5000 $(DOCKER_REPO):$(VERSION)
 
 test: venv
 	# Run the full test suite.

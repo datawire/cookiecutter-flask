@@ -20,6 +20,10 @@
               secretKeyRef:
                 name: datawire
                 key: token
+          - name: DATAWIRE_ROUTABLE_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           ports:
           - containerPort: 5000
 
