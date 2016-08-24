@@ -6,8 +6,9 @@
   "repo_browser_url"     : "https://github.com/datawire/{{ cookiecutter.repo_name }}",
 
   "project_name"         : "{{ cookiecutter.repo_name }}",  
-  "project_version"      : "0.0.1",
+  "project_version"      : "0.1",
 
-  "docker_registry_host": "us.gcr.io",
-  "docker_repo": "datawireio/{{ cookiecutter.project_name }}"
+  "docker_registry_host": ["us.gcr.io", "docker.io"],
+  "docker_organization": "datawireio",
+  "docker_repo": "{{ cookiecutter.docker_organization }}/{{ cookiecutter.project_name }}"
 }

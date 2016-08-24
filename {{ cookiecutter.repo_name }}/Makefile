@@ -3,8 +3,8 @@
 VERSION=$(shell cat VERSION)
 QUARK_REQUIREMENTS=$(shell sed -e '/^[[:space:]]*$$/d' -e '/^[[:space:]]*\#/d' requirements-quark.txt | tr '\n' ' ' )
 
-DOCKER_REGISTRY_HOST="{{ cookiecutter.docker_registry_host }}"
-DOCKER_REPO="{{ cookiecutter.docker_repo }}"
+DOCKER_REGISTRY_HOST={{ cookiecutter.docker_registry_host }}
+DOCKER_REPO={{ cookiecutter.docker_repo }}
 
 .PHONY: all
 
@@ -43,11 +43,11 @@ quark-install-venv: venv
 
 publish: docker
 	docker tag $(DOCKER_REPO):$(VERSION) $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
-	gcloud docker push $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
+	docker push $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
 
 publish-no-build:
 	docker tag $(DOCKER_REPO):$(VERSION) $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
-	gcloud docker push $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
+	docker push $(DOCKER_REGISTRY_HOST)/$(DOCKER_REPO):$(VERSION)
 
 run-dev: venv
 	# Run the service or application in development mode.

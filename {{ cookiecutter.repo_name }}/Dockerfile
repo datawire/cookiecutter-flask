@@ -6,12 +6,8 @@ LABEL PROJECT_REPO_URL = "{{ cookiecutter.repo_url }}" \
       VENDOR = "Datawire" \
       VENDOR_URL = "https://datawire.io/"
 
-WORKDIR /opt/datawire/{{ cookiecutter.project_name }}/service
-COPY service/ ./
-
 WORKDIR /opt/datawire/{{ cookiecutter.project_name }}
-COPY config/ ./config
-COPY requirements.txt requirements-quark.txt entrypoint.sh ./
+COPY requirements.txt requirements-quark.txt ./
 
 RUN apk --no-cache add \
     bash \
@@ -38,8 +34,14 @@ RUN bash install.sh
 
 RUN ${HOME}/.quark/bin/quark install \
     --python $(sed -e '/^[[:space:]]*$$/d' -e '/^[[:space:]]*\#/d' requirements-quark.txt | tr '\n' ' ' ) \
-    && rm requirements-quark.txt \
-    && mv /opt/datawire/{{ cookiecutter.project_name }}/config/nginx.conf /etc/nginx/nginx.conf
+    && rm requirements-quark.txt
+
+COPY entrypoint.sh ./
+
+COPY config/ ./config
+RUN mv /opt/datawire/{{ cookiecutter.project_name }}/config/nginx.conf /etc/nginx/nginx.conf
+
+COPY service/ ./service
 
 EXPOSE 5000
 ENTRYPOINT ["./entrypoint.sh"]
